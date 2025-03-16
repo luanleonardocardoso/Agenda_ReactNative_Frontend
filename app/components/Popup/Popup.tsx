@@ -89,8 +89,6 @@ const Popup: React.FC<PopupProps> = ({
 
       setIsModified(false);
       setErrors({ title: false, start: false, end: false });
-
-      console.log("📌 routeToPopup recebido no Popup:", routeToPopup);
     }
   }, [
     visible,

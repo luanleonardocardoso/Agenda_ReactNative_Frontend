@@ -12,8 +12,8 @@ import axios from "axios";
 import Popup from "../../components/Popup/Popup";
 import ButtonNewSchedule from "../../components/ButtonNewSchedule/ButtonNewSchedule";
 import styles from "./Styles";
-import { Appointment } from "./Interfaces"; 
-import { API_URL } from "../../Config/Config"; 
+import { Appointment } from "./Interfaces";
+import { API_URL } from "../../Config/Config";
 
 const Schedule = () => {
   const route = useRoute();
@@ -29,10 +29,6 @@ const Schedule = () => {
   const [selectedAppointment, setSelectedAppointment] =
     useState<Appointment | null>(null);
   const [routeToPopup, setRouteToPopup] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log("routeToPopup atualizado:", routeToPopup);
-  }, [routeToPopup]);
 
   const formattedDate = starton.split(" ")[0].split("-").reverse().join("/");
 
@@ -76,11 +72,20 @@ const Schedule = () => {
   };
 
   return (
-    <ImageBackground source={require("../../../assets/images/background.jpg")} style={styles.background}>
+    <ImageBackground
+      source={require("../../../assets/images/background.jpg")}
+      style={styles.background}
+    >
       <View style={styles.container}>
         <View style={styles.navBar}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Image source={require("../../../assets/images/left.png")} style={styles.backIcon} />
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Image
+              source={require("../../../assets/images/left.png")}
+              style={styles.backIcon}
+            />
           </TouchableOpacity>
           <Text style={styles.title}>Agenda {formattedDate}</Text>
         </View>
@@ -99,8 +104,16 @@ const Schedule = () => {
               keyExtractor={(item) => item.id.toString()}
               renderItem={({ item, index }) => (
                 <TouchableOpacity onPress={() => handleAppointmentPress(item)}>
-                  <View style={[styles.row, index < appointments.length - 1 && styles.separator]}>
-                    <Text style={styles.cell}>{`${item.starton.slice(11, 16)} - ${item.finishedon.slice(11, 16)}`}</Text>
+                  <View
+                    style={[
+                      styles.row,
+                      index < appointments.length - 1 && styles.separator,
+                    ]}
+                  >
+                    <Text style={styles.cell}>{`${item.starton.slice(
+                      11,
+                      16
+                    )} - ${item.finishedon.slice(11, 16)}`}</Text>
                     <Text style={styles.cell}>{item.short_description}</Text>
                   </View>
                 </TouchableOpacity>
