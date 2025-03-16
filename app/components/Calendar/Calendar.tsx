@@ -2,24 +2,25 @@ import React, { useState, useEffect, useCallback } from "react";
 import { View, Image } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { Calendar, DateData } from "react-native-calendars";
+import moment from "moment";
+import "moment/locale/pt-br"; // Garante que moment está no idioma PT-BR
 import { fetchAppointments } from "../../utils/GetScheduledTimes/fetchAppointments";
 import styles from "./Styles";
 import { NavigationProps } from "../../Config/NavigationTypes";
 import { CustomCalendarProps } from "./Interfaces";
+import "./calendarLocaleConfig"; 
 
 const leftArrow = require("../../../assets/images/left.png");
 const rightArrow = require("../../../assets/images/right.png");
 const loadingGif = require("../../../assets/images/loading.gif");
 
+moment.locale("pt-br"); // Garante que moment usa PT-BR
+
 const CustomCalendar: React.FC<CustomCalendarProps> = ({ refresh }) => {
   const navigation = useNavigation<NavigationProps>();
   const today = new Date();
-  const [selected, setSelected] = useState<string>(
-    today.toISOString().split("T")[0]
-  );
-  const [currentMonth, setCurrentMonth] = useState<number>(
-    today.getMonth() + 1
-  );
+  const [selected, setSelected] = useState<string>(today.toISOString().split("T")[0]);
+  const [currentMonth, setCurrentMonth] = useState<number>(today.getMonth() + 1);
   const [currentYear, setCurrentYear] = useState<number>(today.getFullYear());
   const [appointments, setAppointments] = useState<Record<string, any>>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -60,14 +61,9 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({ refresh }) => {
         );
       }
 
-      if (
-        year === todayDate.getFullYear() &&
-        month === todayDate.getMonth() + 1
-      ) {
+      if (year === todayDate.getFullYear() && month === todayDate.getMonth() + 1) {
         for (let day = 1; day < todayDay; day++) {
-          const pastDay = `${year}-${String(month).padStart(2, "0")}-${String(
-            day
-          ).padStart(2, "0")}`;
+          const pastDay = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
           markedDates[pastDay] = {
             disabled: true,
             textColor: "#f08080",
@@ -90,8 +86,7 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({ refresh }) => {
   };
 
   const handleDayPress = (day: DateData) => {
-    if (!day || !day.dateString || appointments[day.dateString]?.disabled)
-      return;
+    if (!day || !day.dateString || appointments[day.dateString]?.disabled) return;
 
     setSelected(day.dateString);
 
@@ -118,6 +113,7 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({ refresh }) => {
           <Image source={loadingGif} style={styles.loadingGif} />
         ) : (
           <Calendar
+            locale="pt-br" // Define o idioma corretamente
             current={`${currentYear}-${String(currentMonth).padStart(2, "0")}-01`}
             minDate={`${currentYear}-${String(currentMonth).padStart(2, "0")}-01`}
             maxDate={`${currentYear}-${String(currentMonth).padStart(2, "0")}-${getLastDayOfMonth(currentYear, currentMonth)}`}
@@ -142,7 +138,7 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({ refresh }) => {
               textDayHeaderFontWeight: "bold",
               textDayFontSize: 20,
               textMonthFontSize: 22,
-              textDayHeaderFontSize: 16,
+              textDayHeaderFontSize: 14,
             }}
           />
         )}
