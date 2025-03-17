@@ -18,29 +18,35 @@ import { API_URL } from "../../Config/Config";
 const Schedule = () => {
   const route = useRoute();
   const navigation = useNavigation();
+  
+  // Obtendo os parâmetros passados para a tela (datas)
   const { starton, finishedon } = route.params as {
     starton: string;
     finishedon: string;
   };
 
+  // Estado para armazenar compromissos
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  // Estado para indicar carregamento dos compromissos
   const [loading, setLoading] = useState<boolean>(true);
+  // Estado para controlar a exibição do popup
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<Appointment | null>(null);
+  // Estado para armazenar o compromisso selecionado
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  // Estado para definir se o popup será para inserção ou edição/exclusão
   const [routeToPopup, setRouteToPopup] = useState<string | null>(null);
 
+  // Formata a data para exibição no cabeçalho (DD/MM/YYYY)
   const formattedDate = starton.split(" ")[0].split("-").reverse().join("/");
 
+  // Função para buscar compromissos na API
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const response = await axios.get<{
-        success: boolean;
-        data: Appointment[];
-      }>(`${API_URL}scheduled-times`, {
-        params: { starton, finishedon },
-      });
+      const response = await axios.get<{ success: boolean; data: Appointment[] }>(
+        `${API_URL}scheduled-times`,
+        { params: { starton, finishedon } }
+      );
 
       setAppointments(response.data.data);
     } catch (error) {
@@ -50,21 +56,25 @@ const Schedule = () => {
     }
   };
 
+  // Chama a função para buscar compromissos sempre que as datas mudam
   useEffect(() => {
     fetchAppointments();
   }, [starton, finishedon]);
 
+  // Fecha o popup e atualiza a lista de compromissos
   const handlePopupClose = () => {
     setPopupVisible(false);
     setRouteToPopup(null);
     fetchAppointments();
   };
 
+  // Abre o popup para inserir um novo compromisso
   const handleNewSchedule = () => {
     setRouteToPopup("insert");
     setPopupVisible(true);
   };
 
+  // Abre o popup para editar/excluir um compromisso existente
   const handleAppointmentPress = (appointment: Appointment) => {
     setRouteToPopup("update_delete");
     setSelectedAppointment(appointment);
@@ -77,6 +87,7 @@ const Schedule = () => {
       style={styles.background}
     >
       <View style={styles.container}>
+        {/* Barra de navegação com botão de voltar e título da agenda */}
         <View style={styles.navBar}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -90,12 +101,15 @@ const Schedule = () => {
           <Text style={styles.title}>Agenda {formattedDate}</Text>
         </View>
 
+        {/* Tabela de compromissos */}
         <View style={styles.table}>
+          {/* Cabeçalho da tabela */}
           <View style={[styles.row, styles.header]}>
             <Text style={[styles.cell, styles.headerText]}>Horário</Text>
             <Text style={[styles.cell, styles.headerText]}>Atividade</Text>
           </View>
 
+          {/* Exibição dos compromissos */}
           {loading ? (
             <Text style={styles.loadingText}>Carregando...</Text>
           ) : appointments.length > 0 ? (
@@ -124,6 +138,7 @@ const Schedule = () => {
           )}
         </View>
 
+        {/* Popup para edição/adição de compromissos */}
         <Popup
           visible={popupVisible}
           onClose={handlePopupClose}
@@ -135,6 +150,7 @@ const Schedule = () => {
           routeToPopup={routeToPopup}
         />
 
+        {/* Botão para adicionar um novo compromisso */}
         <View style={styles.footer}>
           <ButtonNewSchedule onPress={handleNewSchedule} />
         </View>

@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from '../Screens/Home/Home'; // 🔥 Tela principal
-import ScheduledDay from '../Screens/ScheduledDay/ScheduledDay'; // 🔥 Tela de detalhes do dia agendado
+import Home from '../Screens/Home/Home';
+import ScheduledDay from '../Screens/ScheduledDay/ScheduledDay';
 
 const Stack = createStackNavigator();
 
